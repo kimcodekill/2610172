@@ -1,0 +1,21 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
+    <script src="~/Scripts/knockout-3.4.2.js"></script>
+    <title>@ViewBag.Title</title>
+    @RenderSection("Scripts")
+</head>
+<body>
+    <div>
+        @RenderSection("Body")
+    </div>
+</body>
+</html>

@@ -1,0 +1,73 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+@section Scripts{
+    <script>
+        
+        var model = {
+            Bookings: ko.observableArray(),
+            addform: {
+                Participant: ko.observable(""),
+                Event: ko.observable(""),
+                Location: ko.observable(""),
+                DateTime: ko.observable("")
+            }
+        };
+        
+        function sendAjaxRequestHelper(httpMethod, callback, url, postData) {
+            $.ajax("http://localhost:60451/api/booking" + (url ? "/" + url : ""),
+                {
+                    type: httpMethod, success: callback, data: postData
+                });
+        };
+
+        function getAllItems() {
+            sendAjaxRequestHelper("GET", function (data) {
+                model.Bookings.removeAll();
+                for (var i = 0; i < data.length; i++) {
+                    model.Bookings.push(data[i]);
+                }
+            });
+        };
+
+        function removeItem(item) {
+            sendAjaxRequestHelper("DELETE", function () {
+                
+                for (var i = 0; i < model.Bookings().length; i++) {
+                    if (model.Bookings()[i].Id == item.Id) {
+                        model.Bookings.remove(model.Bookings()[i]);
+                        break;
+                    }
+                }
+            }, item.Id)
+        };
+
+        $(document).ready(function () {
+            getAllItems();
+            ko.applyBindings(model); //här sker magin!
+        });
+
+    </script>
+
+}
+
+@section Body{
+    <table>
+        <thead><tr><th>ID</th><th>Name</th><th>Event</th><th>Datetime</th><th>Location</th></tr></thead>
+        <tbody data-bind="foreach: model.Bookings">
+            <tr>
+                <td data-bind="text: Id"></td>
+                <td data-bind="text: Participant"></td>
+                <td data-bind="text: Event"></td>
+                <td data-bind="text: DateTime"></td>
+                <td data-bind="text: Location"></td>
+                <td>
+                    <button data-bind="click: removeItem">Remove</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <hr />
+}
